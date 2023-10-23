@@ -20,28 +20,29 @@ use Inertia\Inertia;
 |
 */
 
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
+});
 
-Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('articles', [ArticlesController::class, 'index'])->middleware(['auth', 'verified'])->name('articles');
-Route::get('locations', [LocationsController::class, 'index'])->middleware(['auth', 'verified'])->name('locations');
-Route::get('containers', [ContainersController::class, 'index'])->middleware(['auth', 'verified'])->name('containers');
-Route::get('articles/{searchText}', [ArticlesController::class, 'searchResult'])->middleware(['auth', 'verified'])->name('articles.searchText');
-
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('articles', [ArticlesController::class, 'index'])->name('articles');
+    Route::get('locations', [LocationsController::class, 'index'])->name('locations');
+    Route::get('containers', [ContainersController::class, 'index'])->name('containers');
+    Route::get('articles/{searchText}', [ArticlesController::class, 'searchResult'])->name('articles.searchText');
+    Route::get('/article', [ArticlesController::class, 'newArticle'])->name('article.new');
+    Route::post('article-store', [ArticlesController::class, 'store'])->name('article.store');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/article', [ArticlesController::class, 'newArticle'])->name('article.new');
-    
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');    
 });
 
 require __DIR__.'/auth.php';

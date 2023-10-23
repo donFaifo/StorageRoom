@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
@@ -10,7 +11,7 @@ class ArticlesController extends Controller
 {
     public function index(){
 
-        $articles = DB::query()->select()->from('articles')->orderBy('created_at')->get();
+        $articles = DB::query()->select()->from('articles')->orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Articles', ['articles' => $articles]);
     }
@@ -57,5 +58,21 @@ class ArticlesController extends Controller
 
     public function newArticle() {
         return Inertia::render('ArticleEdit', []);
+    }
+
+    public function store(Request $request) {
+
+        $data = $request->all();
+        $lm = $data['lm'];
+        $ean = $data['ean'];
+        $description = $data['description'];
+
+        $record = new Article();
+        $record->lm = $lm;
+        $record->ean = $ean;
+        $record->description = $description;
+        $record->save();
+        
+        return redirect(route('articles'));
     }
 }
