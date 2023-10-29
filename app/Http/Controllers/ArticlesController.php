@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Expr\Empty_;
+use Illuminate\Support\Facades\Log;
 
 class ArticlesController extends Controller
 {
     public function index(){
 
-        $articles = DB::query()->select()->from('articles')->orderBy('created_at', 'desc')->get();
+        $articles = DB::query()->select()->from('articles')->orderBy('updated_at', 'desc')->get();
 
         return Inertia::render('Articles', ['articles' => $articles]);
     }
@@ -56,8 +59,18 @@ class ArticlesController extends Controller
         return DB::select('select * from articles');
     }
 
-    public function newArticle() {
-        return Inertia::render('ArticleEdit', []);
+    public function newArticle($id = null) {
+
+        if(!empty($id)) {
+
+            $article = DB::query()->select()->from('articles')->where('id','=',$id)->first();
+
+            return Inertia::render('ArticleEdit', ['id' => $id, 'article' => $article]);
+        } else {
+            return Inertia::render('ArticleEdit', []);
+        }
+
+
     }
 
     public function store(Request $request) {
@@ -66,13 +79,35 @@ class ArticlesController extends Controller
         $lm = $data['lm'];
         $ean = $data['ean'];
         $description = $data['description'];
+        $id = $data['id'];
 
-        $record = new Article();
-        $record->lm = $lm;
-        $record->ean = $ean;
-        $record->description = $description;
-        $record->save();
+        if($id == '') {
+            DB::table('articles')->insert([
+                'lm' => $lm,
+                'ean' => $ean,
+                'description' => $description,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ]);         
+        } else {
+            DB::table('articles')->where('id','=',$id)->update([
+                'lm' => $lm,
+                'ean' => $ean,
+                'description' => $description,
+                'updated_at' => Carbon::now()
+            ]);
+        }
         
         return redirect(route('articles'));
     }
+
+    public function deleteArticle(Request $request) {
+
+        $id = $request->all()['id'];
+
+        DB::table('articles_containers')->where('article_id','=',$id)->delete();
+
+        DB::table('articles')->delete($id);
+    }
+
 }

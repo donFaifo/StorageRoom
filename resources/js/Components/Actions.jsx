@@ -1,23 +1,22 @@
 import { faEdit, faTrashCan } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { Link } from "@inertiajs/react"
+import { Link, router } from "@inertiajs/react"
 
 export default function Actions({ id }) {
 
   return (
     <>
-      <Link href="#">
+      <Link href={route('article.new', {id: id})}>
         <FontAwesomeIcon 
           icon={faEdit} 
           className="px-4"
-          onClick={() => console.log('Editar ' + id)}
         />
       </Link>
-      <Link href="#">
+      <Link href={route('article.delete', {id: id})} method="post" as='button'>
         <FontAwesomeIcon
           icon={faTrashCan}
           className="px-4" 
-          onClick={() => console.log('Eliminar ' + id)}
+          id="delete"
         />
       </Link>
     </>

@@ -10,6 +10,10 @@ class Article extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'lm', 'ean', 'description'
+    ];
+
     public function container(): BelongsToMany
     {
         return $this->belongsToMany(Container::class);

@@ -35,8 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('locations', [LocationsController::class, 'index'])->name('locations');
     Route::get('containers', [ContainersController::class, 'index'])->name('containers');
     Route::get('articles/{searchText}', [ArticlesController::class, 'searchResult'])->name('articles.searchText');
-    Route::get('/article', [ArticlesController::class, 'newArticle'])->name('article.new');
+    Route::get('/article/{id?}', [ArticlesController::class, 'newArticle'])->name('article.new');
     Route::post('article-store', [ArticlesController::class, 'store'])->name('article.store');
+    Route::post('article-delete', [ArticlesController::class, 'deleteArticle'])->name('article.delete');
 });
 
 Route::middleware('auth')->group(function () {

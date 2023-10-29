@@ -16,12 +16,12 @@ export default function ArticleEdit({ auth, article = {
   description: '',
   created_at: '',
   updated_at: ''
-}}) {
+}, id=''}) {
 
   const [stateLm, setStateLm] = useState(article.lm);
   const [stateEan, setStateEan] = useState(article.ean);
-  const [stateDescription, setStateDescription] = useState(article.ean);
-
+  const [stateDescription, setStateDescription] = useState(article.description);
+  
   const handleLmInput = (e) => {
     setStateLm(e.target.value);
   }
@@ -46,15 +46,17 @@ export default function ArticleEdit({ auth, article = {
   }
 
   function handleSubmit(e) {
+
     e.preventDefault();
 
     const obj = {
+      id: id,
       lm: stateLm,
       ean: stateEan,
       description: stateDescription
     };
-
-    router.post(route('article.store'), obj);
+    
+    router.post(route('article.store'), obj);    
   }
 
   return (
