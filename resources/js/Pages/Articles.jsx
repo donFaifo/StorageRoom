@@ -20,7 +20,12 @@ export default function Articles({ auth, articles }) {
           <td className='text-center'>{item.lm}</td>
           <td className='text-center'>{item.ean}</td>
           <td>{item.description}</td>
-          <td className='text-center'><Actions id={item.id} /></td>
+          <td className='text-center'>
+            <Actions 
+              editRoute={route('article.new', {id: item.id})} 
+              deleteRoute={route('article.delete', {id: item.id})}
+            />
+          </td>
         </tr>
       )
   })
